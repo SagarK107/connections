@@ -14,26 +14,28 @@ const { Client } = pg;
 const client = new Client();
 await client.connect();
 
-async function readPatternData(id,res) {
-  try {
-    const result = await client.query(`SELECT * from pattern where id=${id}`);
+async function readPatternData(id)
+{
 
-    if (result.rows.length > 0)
-      {
-        console.log('Pattern Data retrieved from the database:');
-        console.table(result.rows);
-        res.json(result.rows[0]);
-      }
-      else
-      {
-        res.sendStatus(404);
-      }
-
-  }
-  catch (err)
+  try
   {
-    console.error('Error reading data:', err.stack);
+    const result = await client.query(`SELECT * from pattern where id=${id}`);
+    const o = {}
+    
+      
+    for (const [idx,row] of Object.entries(result.rows[0]))
+    {
+      o[idx] = row;
+    }
+  
+    console.log(o);
+    return o;
+    
   }
+  catch (err) {
+    console.error('Error reading data:', err.stack);
+    return {}
+  } 
 }
 
 async function readQuestionData(id,res) {
@@ -49,7 +51,19 @@ async function readQuestionData(id,res) {
     {
       console.log('Data retrieved from the database:');
       console.table(result.rows);
-      res.json(result.rows[0]);
+      console.log(result.rows);
+      var question = {}
+      for (const [key,element] of Object.entries(result.rows[0]))
+      {
+        console.log(key,element);
+        if ( key != 'id')
+        {
+          var o = await readPatternData(element);
+          
+          question[key] = o;
+        }
+      }
+      res.json(question);
     }
     else
     {
@@ -81,12 +95,7 @@ app.get('/api/:id', (req, res) => {
     
   });
 
-app.get('/api/pattern/:id',(req,res) => {
-  res.set('Access-Control-Allow-Origin', port_string);
-  const itemId = parseInt(req.params.id, 10);
-  readPatternData(itemId,res);
 
-});
 
   
 app.listen(port, () => {

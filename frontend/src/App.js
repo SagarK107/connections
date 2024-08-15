@@ -2,6 +2,7 @@
 import  Button  from 'react-bootstrap/Button';
 import './App.css';
 import Board from './components/Board';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { FormControl } from 'react-bootstrap';
 import { useState } from 'react';
 
@@ -14,7 +15,7 @@ function App() {
     <div className="App">
       Connections
       <div>
-        <FormControl type="number" onChange ={e => setPuzzleIdText(e.target.value)} placeholder='Enter Puzzle ID'/>
+        <FormControl type="number" onChange ={e => setPuzzleIdText(e.target.value)} placeholder='Enter Puzzle ID' className='mx-auto'/>
         <Button variant="primary" onClick={e => setPuzzleId(puzzleIdText)}>Submit</Button>
         </div>
       <div>
