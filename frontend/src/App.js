@@ -16,7 +16,7 @@ function App() {
       Connections
       <div>
         <FormControl type="number" onChange ={e => setPuzzleIdText(e.target.value)} placeholder='Enter Puzzle ID' className='mx-auto'/>
-        <Button variant="primary" onClick={e => setPuzzleId(puzzleIdText)}>Submit</Button>
+        <Button variant="primary" onClick={e => setPuzzleId(puzzleIdText)}>Fetch Puzzle</Button>
         </div>
       <div>
       <Board puzzle_id={puzzleId} />

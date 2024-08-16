@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import Square from './Square'
 import './board.css'
+import Button from 'react-bootstrap/esm/Button';
 
 
 export default function Board({puzzle_id}) {
   const [text,setText] = useState("a");
   const [puzzleData,setPuzzleData] = useState({});
   const [answersData,setAnswersData] = useState([[]]);
+  const [selectedAnswers,setSelectedAnswers] = useState([]);
+
+  const ANSWER_NOT_SELECTED = 0;
+  const ANSWER_ALREADY_SELECTED = 1;
+  const FOUR_ANSWERS_ALREADY_SELECTED = 2;
   
   function shuffleArray(array) {
     // Create a copy of the array to avoid mutating the original array
@@ -18,6 +24,48 @@ export default function Board({puzzle_id}) {
     return shuffledArray;
   }
 
+  function verifyAnswer()
+  {
+    if (selectedAnswers.length === 4)
+      
+    {
+      var i = 0;
+      const check = puzzleData[selectedAnswers[0]]
+      for (var answer of selectedAnswers)
+        {
+          if (puzzleData[answer] !== check)
+          {
+            console.log("Wrong");
+            console.log(answer,check);
+            setSelectedAnswers([]); // Empty selected Answers
+            return false;
+          }
+        }
+    }
+    setSelectedAnswers([]);
+    console.log("Correct!");
+    return true;
+    
+  }
+
+  function addAnswer(answer)
+  {
+    console.log(answer);
+    if (selectedAnswers.length < 4 && !selectedAnswers.includes(answer))
+      {
+        setSelectedAnswers([...selectedAnswers,answer]);
+        return ANSWER_NOT_SELECTED; // Answer selected succesfully
+      }
+    else if (selectedAnswers.includes(answer))
+    {
+      //Remove answer
+      selectedAnswers(selectedAnswers.filter(a => a != answer));
+      return ANSWER_ALREADY_SELECTED;
+
+    }
+      return FOUR_ANSWERS_ALREADY_SELECTED;
+  }
+  
   function handleData(data)
   {
     console.log(data);
@@ -31,7 +79,7 @@ export default function Board({puzzle_id}) {
       {
         if (key !== "id" && key !== "theme" && key !== "difficulty")
           {
-            o[answer] = key;
+            o[answer] = pattern["theme"];
             b.push(answer);
           }
       }
@@ -55,6 +103,7 @@ export default function Board({puzzle_id}) {
     setPuzzleData(o);
     setAnswersData(a);
     console.log(a);
+    console.log(o);
   }
   useEffect( () => {
     if (puzzle_id > 0)
@@ -77,12 +126,13 @@ export default function Board({puzzle_id}) {
         (e,i) => 
           <div className={`${i} row`}>
             {e.map( f =>
-                <Square square_text={f} />
+                <Square square_text={f} addAnswer={addAnswer}/>
             )}
             </div>
         )
       
      }
+     <Button onClick={e => verifyAnswer()} variant='warning'>Submit Answer</Button>
      
     </div>
   )
