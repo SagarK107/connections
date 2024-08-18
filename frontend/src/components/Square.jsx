@@ -4,7 +4,7 @@ import './board.css';
 export default function Square({square_text,addAnswer}) {
   return (
     <div className='col'>
-      <Button variant="secondary" onClick={e => addAnswer(square_text)}>{square_text}</Button>
+      <Button variant="outline-secondary" onClick={e => addAnswer(square_text)}>{square_text}</Button>
       </div>
   )
 }

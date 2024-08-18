@@ -9,6 +9,7 @@ export default function Board({puzzle_id}) {
   const [puzzleData,setPuzzleData] = useState({});
   const [answersData,setAnswersData] = useState([[]]);
   const [selectedAnswers,setSelectedAnswers] = useState([]);
+  const [alreadyAnswered,setAlreadyAnswered] = useState([]);
 
   const ANSWER_NOT_SELECTED = 0;
   const ANSWER_ALREADY_SELECTED = 1;
@@ -24,6 +25,7 @@ export default function Board({puzzle_id}) {
     return shuffledArray;
   }
 
+  
   function verifyAnswer()
   {
     if (selectedAnswers.length === 4)
@@ -46,6 +48,20 @@ export default function Board({puzzle_id}) {
     console.log("Correct!");
     return true;
     
+  }
+
+  function handleAnswer() {
+    if (verifyAnswer())
+    {
+      var a = [];
+      for (var answer of selectedAnswers)
+      {
+        a.push(answer);
+        setAnswersData(answersData.filter(e => e !== answer));
+      }
+      setAlreadyAnswered([...alreadyAnswered,a]);
+    }
+    console.log(answersData.filter(e => e.toSorted() !== a.toSorted()));
   }
 
   function addAnswer(answer)
@@ -121,6 +137,11 @@ export default function Board({puzzle_id}) {
  
   return (
     <div>
+    {
+      alreadyAnswered.map(
+        a => <Button>{a.join(",")}</Button>
+      )
+    }
      {
       answersData.map(
         (e,i) => 
@@ -132,7 +153,7 @@ export default function Board({puzzle_id}) {
         )
       
      }
-     <Button onClick={e => verifyAnswer()} variant='warning'>Submit Answer</Button>
+     <Button onClick={e => handleAnswer()} variant='warning'>Submit Answer</Button>
      
     </div>
   )
